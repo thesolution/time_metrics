@@ -1,0 +1,28 @@
+version: '3'
+services:
+    metrics:
+      build: .
+      environment:
+      - TIME_ZONE=America/New_York
+      - STATSD_HOST=graphite
+    # ubuntu:
+    #   image: ubuntu:latest
+    #   command: /bin/bash
+    #   stdin_open: true
+    #   tty: true
+    graphite:
+      image: hopsoft/graphite-statsd
+      ports:
+      - "80:80"
+      - 2003-2004:2003-2004
+      - 2023-2024:2023-2024
+      - 8125:8125/udp
+      - 8126:8126
+      volumes:
+      - ./volumes/graphite/nginx:/etc/nginx
+    grafana:
+        image: grafana/grafana
+        ports:
+        - "3000:3000"
+        depends_on: 
+        - graphite
